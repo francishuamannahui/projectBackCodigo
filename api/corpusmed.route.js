@@ -26,7 +26,4 @@ router.route("/pedidos")
 .delete(PedidosCtrl.apiDeletePedido)
 
 
-router.route("/login")
-.post(LoginCrtl.apiGetLogin)
-
 export default router

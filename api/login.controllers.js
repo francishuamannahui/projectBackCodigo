@@ -8,7 +8,11 @@ export default class ReviewController {
       };
       const ReviewResponse = await LoginDao.getLogin(user);
       
-      res.json({status:"success"})
+      let response = {
+        email: user.email,
+        token: ReviewResponse
+      };
+      res.json(response);
     } catch (e) {
       res.status(500).json({error: e.message})
     }
