@@ -3,13 +3,13 @@ export default class ReviewController {
     static async apiPostPedidos(req, res, next) {
         try{
             const user = {
-                detallePedido:req.body.detallePedido,
+                cart:req.body.cart,
                 estado:req.body.estado,
                 direccion:req.body.direccion,
                 coordenadas:req.body.coordenadas,
                 idCliente:req.body.idCliente
             }
-            console.log(user.detallePedido);
+            console.log(user.cart);
             const date = new Date()
             const ReviewResponse = await PedidosDao.addPedido(
                 user,
@@ -28,7 +28,7 @@ export default class ReviewController {
 
             const user = {
              direccion : req.body.direccion,
-             detallePedido : req.body.detallePedido,
+             cart : req.body.cart,
              estado: req.body.estado,
              coordenadas:req.body.coordenadas
             }
@@ -58,15 +58,43 @@ export default class ReviewController {
         try{
             const reviewId = req.body.id
             const userId= req.body.idcliente
-            console.log(reviewId)
             const reviewResponse = await PedidosDao.deletePedido(
                 reviewId,
                 userId
             )
+            console.log(reviewResponse);
             res.json({status : "success"})
         }
         catch(e){
             res.status(500).json({error: e.message})
         }
+    }
+    static async apiGetPedidos(req, res, next){
+        const pedidosPerPage = req.query.pedidosPerPage
+      ? parseInt(req.query.pedidosPerPage, 10)
+      : 529;
+
+    const page = req.query.page ? parseInt(req.query.page, 10) : 0;
+    console.log("jj",req.query.idCliente);
+    let filters = {};
+    if (req.query.idCliente) {
+        console.log(req.query.idCliente);
+      filters.idCliente = req.query.idCliente;
+    } 
+    console.log(filters);
+    const { pedidosList, totalNumPedidos } =
+      await PedidosDao.getPedidos({
+        filters,
+        page,
+        pedidosPerPage,
+      });
+    let response = {
+      pedidos: pedidosList,
+      page: page,
+      filters: filters,
+      entries_per_page: pedidosPerPage,
+      total_results: totalNumPedidos,
+    };
+    res.json(response);
     }
 }

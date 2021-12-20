@@ -10,7 +10,7 @@ app.use(express.json())
 
 
 app.use("/apimp/v1/",validacionToken.validar,corpusmed)
-app.use("/apimp/v1/",middleware)
+app.use("/apimp/auth/",middleware)
 app.use("*",(req, res) => res.status(400).json({
         error: "No encontrado"
     }))
